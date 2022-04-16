@@ -15,7 +15,8 @@ int main(int argc, char const *argv[]) {
     p += Term(0, 3);
     std::cout << p << std::endl;
     Polynomial q(p);
-    std::cout << (p + q) << std::endl;
+    q = p + q;
+    std::cout << q << std::endl;
     /*Term t_power_1(1, 1);
     Term t_power_2(1, 2);
     std::cout << (t_power_1 + t_power_2) << std::endl;

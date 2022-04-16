@@ -8,23 +8,23 @@
 size_t Term::cnt = 0;
 
 Term::Term() : coef(0), power(0) {
-    std::cout << "+Term " << *this << "[" << cnt << "->" << ++cnt << "]\n";
+    std::cout << "+Term#0 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
 Term::Term(int64_t coef) : coef(coef), power(0) {
-    std::cout << "+Term " << *this << "[" << cnt << "->" << ++cnt << "]\n";
+    std::cout << "+Term#1 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
 Term::Term(int64_t coef, uint64_t power) : coef(coef), power(power) {
-    std::cout << "+Term " << *this << "[" << cnt << "->" << ++cnt << "]\n";
+    std::cout << "+Term#2 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
 Term::Term(Term const &other) : coef(other.coef), power(other.power) {
-    std::cout << "+Term " << *this << "[" << cnt << "->" << ++cnt << "]\n";
+    std::cout << "+Term#3 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
 Term::~Term() {
-    std::cout << "-Term " << *this << "[" << cnt << "->" << --cnt << "]\n";
+    std::cout << "-Term " << *this << "[" << cnt << "->" << --cnt << "]" << std::endl;
 }
 
 Term &Term::operator=(Term const &other) {
@@ -49,10 +49,9 @@ Term &Term::operator*=(Term const &other) {
     return *this;
 }
 
-Abstract const &&Term::operator+(Abstract const &other) const {
+Abstract &&Term::operator+(Abstract const &other) const {
     if (other.what() == POLYNOMIAL || static_cast<Term const &>(other).power != power) {
         Polynomial *ans_poly = new(std::nothrow) Polynomial(other);
-        //std::cout << "test " << *ans_poly << std::endl;
         assert(ans_poly);
         return std::move(*ans_poly += *this);
     }
@@ -61,7 +60,7 @@ Abstract const &&Term::operator+(Abstract const &other) const {
     return std::move(*ans += static_cast<Term const &>(other));
 }
 
-Abstract const &&Term::operator*(Abstract const &other) const {
+Abstract &&Term::operator*(Abstract const &other) const {
     return *this + other;  // Temporary
 }
 

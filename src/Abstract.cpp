@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Abstract.hpp"
 #include "Term.hpp"
 #include "Polynomial.hpp"
@@ -10,3 +12,5 @@
     return Polynomial(*this);
 }
 */
+
+size_t Abstract::cnt = 0;

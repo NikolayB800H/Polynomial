@@ -17,12 +17,15 @@ public:
     Polynomial(Term const &term);
     virtual ~Polynomial();
     virtual Polynomial &operator=(Abstract const &abstract);
+    virtual Polynomial &operator=(Abstract &&abstract);
     virtual Polynomial &operator=(Polynomial const &other);
+    virtual Polynomial &operator=(Polynomial &&other);
     virtual Polynomial &operator=(Term const &term);
+    virtual Polynomial &operator=(Term &&term);
     virtual Polynomial &operator+=(Abstract const &other);
     virtual Polynomial &operator*=(Abstract const &other);
-    virtual Abstract const &&operator+(Abstract const &other) const override;
-    virtual Abstract const &&operator*(Abstract const &other) const override;
+    virtual Abstract &&operator+(Abstract const &other) const override;
+    virtual Abstract &&operator*(Abstract const &other) const override;
     virtual bool operator<(Polynomial const &other) const;
     virtual bool operator<(Term const &term) const;
     virtual inline What what() const override;

@@ -17,8 +17,8 @@ public:
     virtual Term &operator=(Term const &other);
     virtual Term &operator+=(Term const &other);
     virtual Term &operator*=(Term const &other);
-    virtual Abstract const &&operator+(Abstract const &other) const override;
-    virtual Abstract const &&operator*(Abstract const &other) const override;
+    virtual Abstract &&operator+(Abstract const &other) const override;
+    virtual Abstract &&operator*(Abstract const &other) const override;
     virtual bool operator<(Term const &other) const;
     virtual bool operator<(Polynomial const &polynomial) const;
     virtual inline What what() const override;

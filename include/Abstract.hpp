@@ -22,4 +22,5 @@ public:
     virtual inline What what() const = 0;
     //operator Term() const;
     //operator Polynomial();
+    static size_t cnt;
 };
