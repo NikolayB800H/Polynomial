@@ -1,5 +1,11 @@
 build:
-	g++ -std=c++17 src/*.cpp -I include -o main
+	g++ -g -std=c++17 src/*.cpp -I include -o main
+
+vrun:
+	valgrind --leak-check=full ./main
+
+fbuild:
+	g++ -g -fsanitize=address -std=c++17 src/*.cpp -I include -o main
 
 run:
-	valgrind --leak-check=full ./main
+	./main

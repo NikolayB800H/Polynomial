@@ -1,37 +1,73 @@
 #include <cassert>
 
-#include <iostream>
+//#include <iostream>
 
 #include "Polynomial.hpp"
 #include "Term.hpp"
 
-size_t Term::cnt = 0;
+//size_t Term::cnt = 0;
+bool Term::sortedLess = true;
 
 Term::Term() : coef(0), power(0) {
-    std::cout << "+Term#0 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
+    //std::cout << "+Term#0 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
 Term::Term(int64_t coef) : coef(coef), power(0) {
-    std::cout << "+Term#1 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
+    //std::cout << "+Term#1 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
 Term::Term(int64_t coef, uint64_t power) : coef(coef), power(power) {
-    std::cout << "+Term#2 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
+    //std::cout << "+Term#2 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
+
+/*Term::Term(Abstract const &abstract) {
+    *this = abstract;
+}
+
+Term::Term(Abstract const &&abstract) {
+    *this = abstract;
+}*/
 
 Term::Term(Term const &other) : coef(other.coef), power(other.power) {
-    std::cout << "+Term#3 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
+    //std::cout << "+Term#3 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
+/*Term::Term(Term const &&other) : coef(other.coef), power(other.power) {
+    delete &other;
+}*/
+
 Term::~Term() {
-    std::cout << "-Term " << *this << "[" << cnt << "->" << --cnt << "]" << std::endl;
+    //std::cout << "-Term " << *this << "[" << cnt << "->" << --cnt << "]" << std::endl;
 }
+
+/*Term &Term::operator=(Abstract const &abstract) {
+    if (abstract.what() == TERM) {
+        return *this = static_cast<Term const &>(abstract);
+    }
+    assert(false);
+    return *this;
+}
+
+Term &Term::operator=(Abstract const &&abstract) {
+    if (abstract.what() == TERM) {
+        return *this = static_cast<Term const &&>(abstract);
+    }
+    assert(false);
+    return *this;
+}*/
 
 Term &Term::operator=(Term const &other) {
     coef = other.coef;
     power = other.power;
     return *this;
 }
+
+/*Term &Term::operator=(Term const &&other) {
+    coef = other.coef;
+    power = other.power;
+    delete &other;
+    return *this;
+}*/
 
 Term &Term::operator+=(Term const &other) {
     //std::cout << *this << " ? "<< other << std::endl;
@@ -60,17 +96,30 @@ Abstract &&Term::operator+(Abstract const &other) const {
     return std::move(*ans += static_cast<Term const &>(other));
 }
 
-Abstract &&Term::operator*(Abstract const &other) const {
-    return *this + other;  // Temporary
+Abstract &&Term::operator*(Abstract const &abstract) const {
+    if (abstract.what() == TERM) {
+        return std::move(*this * static_cast<Term const &>(abstract));
+    }
+    return std::move(*this * static_cast<Polynomial const &>(abstract));
+}
+
+Polynomial Term::operator*(Polynomial const &polynomial) const {
+    Polynomial tmp(polynomial);
+    return tmp *= *this;
+}
+
+Term Term::operator*(Term const &term) const {
+    Term tmp(term);
+    return tmp *= *this;
 }
 
 bool Term::operator<(Term const &term) const {
     //std::cout << *this << " < " << term << " = " << (power < term.power) << std::endl;
-    return power < term.power;
+    return sortedLess ? (term.power < power) : (power < term.power);
 }
 
 bool Term::operator<(Polynomial const &polynomial) const {
-    return power < polynomial.power;
+    return sortedLess ? (polynomial.power < power) : (power < polynomial.power);
 }
 
 inline What Term::what() const {
@@ -82,7 +131,13 @@ inline int64_t Term::getCoef() const {
 }
 
 std::ostream& operator<<(std::ostream &out, Term const &term) {
-    out << term.coef;
+    if (term.coef != 1 || term.power == 0) {
+        if (term.coef == -1 && term.power != 0) {
+            out << '-';
+        } else {
+            out << term.coef;
+        }
+    }
     if (term.power) {
         out << "x";
         if (term.power > 1) {
@@ -92,8 +147,82 @@ std::ostream& operator<<(std::ostream &out, Term const &term) {
     return out;
 }
 
+std::ostream& operator<<(std::ostream &out, Term const *term) {
+    if (term == nullptr) {
+        out << "(Ptr to object<Term> at NULL)";
+        return out;
+    }
+    out << "(Ptr to object<Term> at " << static_cast<void const *>(term) << ") {\n\t" << *term << "\n}";
+    return out;
+}
+
 std::istream& operator>>(std::istream &in, Term &term) {
     char chr = 0;
-    //in >> term.coef >> chr >> chr >> term.power;
+    bool got_mp = false;
+    bool is_positive = true;
+    while (!std::isdigit(chr = in.peek()) && chr != 'x') {
+        in.get(chr);
+        //std::cout << '[' << chr << ']';
+        if (chr == '-' && !got_mp) {
+            is_positive = false;
+            got_mp = true;
+        } else if (chr == '+' && !got_mp) {
+            is_positive = true;
+            got_mp = true;
+        } else if (!std::isspace(chr)) {
+            assert(false);
+            //in.setstate(std::ios_base::failbit);
+            //return in;
+        }
+    }
+    if (chr != 'x') {
+        in >> term.coef;
+        if (in.fail()) {
+            term.coef = 1;
+        }
+    } else {
+        term.coef = 1;
+    }
+    if (!is_positive) {
+        term.coef *= -1;
+    }
+    bool got_x = false;
+    bool got_arrow = false;
+    while (!std::isdigit(in.peek())) {
+        in.get(chr);
+        //std::cout << '(' << chr << ')';
+        if (chr == 'x' && !got_x) {
+            got_x = true;
+        } else if (chr == '^' && (!got_arrow && got_x)) {
+            got_arrow = true;
+        } else if (std::isspace(chr)) {
+            if (chr == '\n') {
+                break;
+            }
+        } else {
+            //std::cout << '!';
+            break;
+            //assert(false);
+            //in.setstate(std::ios_base::failbit);
+            //return in;
+        }
+    }
+    if (got_arrow) {
+        if ((!std::isspace(chr) && chr != '^')) {
+            assert(false);
+            //in.setstate(std::ios_base::failbit);
+            //return in;
+        }
+        in >> term.power;
+        if (in.fail()) {
+            assert(false);
+            //in.setstate(std::ios_base::failbit);
+            //return in;
+        }
+    } else if (got_x) {
+        term.power = 1;
+    } else {
+        term.power = 0;
+    }
     return in;
 }

@@ -5,8 +5,8 @@ enum What {
     POLYNOMIAL
 };
 
-class Term;
-class Polynomial;
+//class Term;
+//class Polynomial;
 
 class Abstract {
 public:
@@ -22,5 +22,4 @@ public:
     virtual inline What what() const = 0;
     //operator Term() const;
     //operator Polynomial();
-    static size_t cnt;
 };

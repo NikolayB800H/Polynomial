@@ -12,13 +12,23 @@ public:
     Term();
     Term(int64_t coef);
     Term(int64_t coef, uint64_t power);
+    //Term(Abstract const &abstract);
+    //Term(Abstract const &abstract);
+    //Term(Abstract const &&abstract);
     Term(Term const &other);
+    //!!!Term(Term const &&other);
     virtual ~Term();
+    //virtual Term &operator=(Abstract const &abstract);
+    //virtual Term &operator=(Abstract const &other);
+    //virtual Term &operator=(Abstract const &&other);
     virtual Term &operator=(Term const &other);
+    //!!!virtual Term &operator=(Term const &&other);
     virtual Term &operator+=(Term const &other);
     virtual Term &operator*=(Term const &other);
-    virtual Abstract &&operator+(Abstract const &other) const override;
-    virtual Abstract &&operator*(Abstract const &other) const override;
+    virtual Abstract &&operator+(Abstract const &abstract) const override;
+    virtual Abstract &&operator*(Abstract const &abstract) const override;
+    virtual Polynomial operator*(Polynomial const &polynomial) const;
+    virtual Term operator*(Term const &term) const;
     virtual bool operator<(Term const &other) const;
     virtual bool operator<(Polynomial const &polynomial) const;
     virtual inline What what() const override;
@@ -26,11 +36,13 @@ public:
     friend std::ostream& operator<<(std::ostream &out, Term const &abstract);
     friend std::istream& operator>>(std::istream &in, Term &abstract);
     friend Polynomial;
-    static size_t cnt;
+    //static size_t cnt;
 private:
+    static bool sortedLess;
     int64_t coef;
     uint64_t power;
 };
 
 std::ostream& operator<<(std::ostream &out, Term const &term);
+std::ostream& operator<<(std::ostream &out, Term const *term);
 std::istream& operator>>(std::istream &in, Term &term);
