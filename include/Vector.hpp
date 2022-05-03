@@ -5,8 +5,6 @@
 #include <cstring>
 #include <ostream>
 
-//#include <iostream>
-
 constexpr size_t START_SIZE = 2;
 
 enum retStatus {
@@ -222,34 +220,25 @@ template<class T>
 retStatus Vector<T>::binSearch(T const &elem
                                , size_t &left
                                , size_t &right) const {
-    //std::cout << "{{{\nStarting binSearch at [" << left << "; " << right << "]:\n";
     if (!size) {
         return ERROR;
     }
     size_t mid = (left + right) / 2;
-    //std::cout << "Size is OK, mid set at " << mid << ".\n";
-    //std::cout << "Finding " << elem << " in " << *this << std::endl;
     while (left < mid && mid < right) {
         (mid >= size) ? right = mid
                       : ((data[mid] < elem) ? left = mid : right = mid);
         mid = (left + right) / 2;
-        //std::cout << "Updated left(" << left << "), mid(" << mid << "), right(" << right << ").\n";
     }
-    //std::cout << "Checking: " << (data[left] < elem) << ", " << (elem < data[left]) << std::endl;
     if (!(data[left] < elem || elem < data[left])) {
         right = left;
-        //std::cout << "Set right(" << right << ").\n";
         return OK;
     }
     if (right < size) {
-        //std::cout << "Checking: " << (data[right] < elem) << ", " << (elem < data[right]) << std::endl;
         if (!(data[right] < elem || elem < data[right])) {
             left = right;
-            //std::cout << "Set left(" << left << ").\n";
             return OK;
         }
     }
-    //std::cout << "Finishing binSearch with left = " << left << ", right = " << right << ".\n}}}"<< std::endl;
     return OK;
 }
 

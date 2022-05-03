@@ -12,17 +12,9 @@ public:
     Term();
     Term(int64_t coef);
     Term(int64_t coef, uint64_t power);
-    //Term(Abstract const &abstract);
-    //Term(Abstract const &abstract);
-    //Term(Abstract const &&abstract);
     Term(Term const &other);
-    //!!!Term(Term const &&other);
     virtual ~Term();
-    //virtual Term &operator=(Abstract const &abstract);
-    //virtual Term &operator=(Abstract const &other);
-    //virtual Term &operator=(Abstract const &&other);
     virtual Term &operator=(Term const &other);
-    //!!!virtual Term &operator=(Term const &&other);
     virtual Term &operator+=(Term const &other);
     virtual Term &operator*=(Term const &other);
     virtual Abstract &&operator+(Abstract const &abstract) const override;
@@ -36,7 +28,6 @@ public:
     friend std::ostream& operator<<(std::ostream &out, Term const &abstract);
     friend std::istream& operator>>(std::istream &in, Term &abstract);
     friend Polynomial;
-    //static size_t cnt;
 private:
     static bool sortedLess;
     int64_t coef;

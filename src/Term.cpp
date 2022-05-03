@@ -1,60 +1,24 @@
 #include <cassert>
 
-//#include <iostream>
-
 #include "Polynomial.hpp"
 #include "Term.hpp"
 
-//size_t Term::cnt = 0;
 bool Term::sortedLess = true;
 
 Term::Term() : coef(0), power(0) {
-    //std::cout << "+Term#0 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
 Term::Term(int64_t coef) : coef(coef), power(0) {
-    //std::cout << "+Term#1 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
 
 Term::Term(int64_t coef, uint64_t power) : coef(coef), power(power) {
-    //std::cout << "+Term#2 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
-
-/*Term::Term(Abstract const &abstract) {
-    *this = abstract;
-}
-
-Term::Term(Abstract const &&abstract) {
-    *this = abstract;
-}*/
 
 Term::Term(Term const &other) : coef(other.coef), power(other.power) {
-    //std::cout << "+Term#3 " << *this << "[" << cnt << "->" << ++cnt << "]" << std::endl;
 }
-
-/*Term::Term(Term const &&other) : coef(other.coef), power(other.power) {
-    delete &other;
-}*/
 
 Term::~Term() {
-    //std::cout << "-Term " << *this << "[" << cnt << "->" << --cnt << "]" << std::endl;
 }
-
-/*Term &Term::operator=(Abstract const &abstract) {
-    if (abstract.what() == TERM) {
-        return *this = static_cast<Term const &>(abstract);
-    }
-    assert(false);
-    return *this;
-}
-
-Term &Term::operator=(Abstract const &&abstract) {
-    if (abstract.what() == TERM) {
-        return *this = static_cast<Term const &&>(abstract);
-    }
-    assert(false);
-    return *this;
-}*/
 
 Term &Term::operator=(Term const &other) {
     coef = other.coef;
@@ -62,15 +26,7 @@ Term &Term::operator=(Term const &other) {
     return *this;
 }
 
-/*Term &Term::operator=(Term const &&other) {
-    coef = other.coef;
-    power = other.power;
-    delete &other;
-    return *this;
-}*/
-
 Term &Term::operator+=(Term const &other) {
-    //std::cout << *this << " ? "<< other << std::endl;
     if (power == other.power) {
         coef += other.coef;
         return *this;
@@ -114,7 +70,6 @@ Term Term::operator*(Term const &term) const {
 }
 
 bool Term::operator<(Term const &term) const {
-    //std::cout << *this << " < " << term << " = " << (power < term.power) << std::endl;
     return sortedLess ? (term.power < power) : (power < term.power);
 }
 
@@ -162,7 +117,6 @@ std::istream& operator>>(std::istream &in, Term &term) {
     bool is_positive = true;
     while (!std::isdigit(chr = in.peek()) && chr != 'x') {
         in.get(chr);
-        //std::cout << '[' << chr << ']';
         if (chr == '-' && !got_mp) {
             is_positive = false;
             got_mp = true;
@@ -190,7 +144,6 @@ std::istream& operator>>(std::istream &in, Term &term) {
     bool got_arrow = false;
     while (!std::isdigit(in.peek())) {
         in.get(chr);
-        //std::cout << '(' << chr << ')';
         if (chr == 'x' && !got_x) {
             got_x = true;
         } else if (chr == '^' && (!got_arrow && got_x)) {
@@ -200,11 +153,7 @@ std::istream& operator>>(std::istream &in, Term &term) {
                 break;
             }
         } else {
-            //std::cout << '!';
             break;
-            //assert(false);
-            //in.setstate(std::ios_base::failbit);
-            //return in;
         }
     }
     if (got_arrow) {

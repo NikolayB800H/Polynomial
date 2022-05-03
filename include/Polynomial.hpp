@@ -26,17 +26,11 @@ public:
     virtual Polynomial &operator=(Term const &term);
     virtual Polynomial &operator=(Term const &&term);
     virtual Polynomial &operator+=(Abstract const &abstract);
-    //virtual Polynomial &operator+=(Abstract const &&abstract);
     virtual Polynomial &operator*=(Abstract const &abstract);
-    //virtual Polynomial &operator*=(Abstract const &&abstract);
     virtual Polynomial &operator*=(Polynomial const &polynomial);
-    //virtual Polynomial &operator*=(Polynomial const &&polynomial);
     virtual Polynomial &operator*=(Term const &term);
-    //virtual Polynomial &operator*=(Term const &&term);
     virtual Abstract const &&operator+(Abstract const &other) const override;
-    //virtual Abstract const &&operator+(Abstract const &&other) const;
     virtual Abstract const &&operator*(Abstract const &other) const override;
-    //virtual Abstract const &&operator*(Abstract const &&other) const;
     virtual bool operator<(Abstract const &abstract) const;
     virtual bool operator<(Polynomial const &other) const;
     virtual bool operator<(Term const &term) const;
@@ -46,11 +40,9 @@ public:
     static void setLessOrder();
     static void setGreaterOrder();
     friend std::ostream& operator<<(std::ostream &out, Polynomial const &polynomial);
-    //friend std::ostream& operator<<(std::ostream &out, Polynomial const &&polynomial);
     friend std::ostream& operator<<(std::ostream &out, Polynomial const *polynomial);
     friend std::istream& operator>>(std::istream &in, Polynomial &polynomial);
     friend Term;
-    //static size_t cnt;
 private:
     static bool sortedLess;
     mutable bool sortedLessLocal;
@@ -61,6 +53,5 @@ private:
 };
 
 std::ostream& operator<<(std::ostream &out, Polynomial const &polynomial);
-//std::ostream& operator<<(std::ostream &out, Polynomial const &&polynomial);
 std::ostream& operator<<(std::ostream &out, Polynomial const *polynomial);
 std::istream& operator>>(std::istream &in, Polynomial &polynomial);
